@@ -30,7 +30,6 @@ from loguru import logger
 
 app_version = "0.0.4"
 
-# Configure loguru
 logger.remove()
 logger.add(
     sys.stderr,
@@ -39,7 +38,7 @@ logger.add(
     colorize=True,
 )
 
-
+# [ ] TODO: add functionality to output log information to file
 class OutputFormat(str, Enum):
     """Available output formats"""
     yaml = "yaml"
