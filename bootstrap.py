@@ -15,19 +15,20 @@ Author: A.J. Igherighe
 Inspired by typer documentation, Google style guide, github, and other examples.
 """
 
+# [ ] TODO: refine imports based on what is consistently used
 import sys
 import traceback
 from enum import Enum
 from pathlib import Path
-from pprint import pprint
-from typing import Optional
+# from pprint import pprint
+# from typing import Optional
 import subprocess
 import shlex
 
 import typer
 from loguru import logger
 
-app_version = "0.0.2"
+app_version = "0.0.4"
 
 # Configure loguru
 logger.remove()
@@ -168,12 +169,11 @@ class Bootstrap:
         raise BootstrapException("This failure does not create python tracebacks")
 
 
-# Typer app configuration
 cli_app = typer.Typer(
     help="Bootstrap the environment.",
     invoke_without_command=True,
     no_args_is_help=True,
-    add_completion=False,  # Disable shell completion for simplicity
+    add_completion=False,  # [] TODO: consider removing this if not used often
 )
 
 
@@ -360,7 +360,7 @@ def cli_demo(ctx: typer.Context):
     typer.secho("✓ Demo completed!", fg=typer.colors.GREEN)
 
 
-# Source management subcommand group
+# [] TODO: remove later if this is no longer needed
 cli_src = typer.Typer(help="Manage project sources")
 cli_app.add_typer(cli_src, name="source")
 
@@ -413,11 +413,10 @@ def clean_terminate(err: Exception):
         BootstrapException,
     )
 
-    # Handle subprocess.TimeoutExpired separately
     if isinstance(err, subprocess.TimeoutExpired):
         logger.error(f"Command timed out: {err.cmd}")
         logger.critical("Operation exceeded maximum allowed time")
-        sys.exit(124)  # Standard timeout exit code
+        sys.exit(124) # [ ] TODO: This code came from a google search. Confirm it's accuracy.
 
     # Handle expected user errors
     if isinstance(err, user_errors):
@@ -432,7 +431,7 @@ def clean_terminate(err: Exception):
         logger.critical(f"Bootstrap exited with error {err_name} (exit code: {rc})")
         sys.exit(rc)
 
-    # Handle unexpected errors (bugs)
+    # These are unexpected errors that represent opportunities to improve this script.
     rc = 255
     logger.error("Unexpected error occurred:")
     logger.error(traceback.format_exc())
@@ -446,12 +445,11 @@ def cli_run():
     try:
         cli_app()
     except typer.Exit as e:
-        # Normal exit from typer (e.g., --help, --version)
         sys.exit(e.exit_code)
     except KeyboardInterrupt:
         logger.warning("Operation cancelled by user")
         typer.echo("\nOperation cancelled.", err=True)
-        sys.exit(130)  # Standard SIGINT exit code
+        sys.exit(130)
     except Exception as err:
         clean_terminate(err)
 

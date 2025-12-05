@@ -25,3 +25,9 @@ This project captures packages and libraries I typically install in all my proje
 
     Note:
       - These should be contained in the Taskfile.yml.
+
+
+The decision to share my approach to doing this was inspired by templates used by others to solve a similar problem, with the most noteable being:
+  - https://gist.github.com/mrjk/8ae4f22e21c7ab5a57a462db046ad776
+  - https://github.com/ralish/bash-script-templatehttps://github.com/ralish/bash-script-template
+  - https://go.dev/blog/gonew
