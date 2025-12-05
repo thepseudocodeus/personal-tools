@@ -1,0 +1,17 @@
+[project]
+name = "personal-tools"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "inquirerpy",
+    "loguru>=0.7.3",
+    "mypy",
+    "poetry",
+    "pyyaml>=6.0.3",
+    "rich",
+    "ruff",
+    "tdqm",
+    "typer>=0.20.0",
+]

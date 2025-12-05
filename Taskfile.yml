@@ -1,0 +1,40 @@
+# https://taskfile.dev
+
+version: "3"
+
+tasks:
+  default:
+    desc: Display possible functions.
+    cmds:
+      - task -a
+    silent: true
+
+  init:env:
+    desc: Initialize base tools
+    cmds:
+      - uv run bootstrap.py init
+
+  add:reqs:
+    desc: Add packages from requirements-dev file
+    cmds:
+      - uv run bootstrap.py install-reqs --timeout 600
+
+  add:reqs-from-file:
+    desc: Install to uv from a file
+    cmds:
+      - uv run bootstrap.py install-reqs --file requirements.txt
+
+  add:reqs-verbose:
+    desc: Install requirements-dev packages with more output
+    cmds:
+      - uv run bootstrap.py -vv install-reqs
+
+  run:demo:
+    desc: Run the demonstration code
+    cmds:
+      - uv run bootstrap.py demo
+
+  run:main:
+    desc: Run the main.py file installed with uv init
+    cmds:
+      - uv run main.py

@@ -1,0 +1,9 @@
+mypy
+ruff
+poetry
+typer
+rich
+tdqm
+inquirerpy
+pyyaml
+loguru
