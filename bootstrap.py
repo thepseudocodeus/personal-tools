@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Version: 12-04-2025-v0.0.2
 
 """Bootstrap App
@@ -16,14 +15,15 @@ Inspired by typer documentation, Google style guide, github, and other examples.
 """
 
 # [ ] TODO: refine imports based on what is consistently used
+import shlex
+
+# from pprint import pprint
+# from typing import Optional
+import subprocess
 import sys
 import traceback
 from enum import Enum
 from pathlib import Path
-# from pprint import pprint
-# from typing import Optional
-import subprocess
-import shlex
 
 import typer
 from loguru import logger
@@ -38,9 +38,11 @@ logger.add(
     colorize=True,
 )
 
+
 # [ ] TODO: add functionality to output log information to file
 class OutputFormat(str, Enum):
     """Available output formats"""
+
     yaml = "yaml"
     json = "json"
     xml = "xml"
@@ -49,6 +51,7 @@ class OutputFormat(str, Enum):
 
 class BootstrapException(Exception):
     """Generic exception for Bootstrap operations"""
+
     def __init__(self, message: str, rc: int = 1):
         super().__init__(message)
         self.rc = rc
@@ -81,7 +84,7 @@ class Bootstrap:
         command: str,
         timeout: int = 60,
         check: bool = True,
-        capture_output: bool = True
+        capture_output: bool = True,
     ) -> subprocess.CompletedProcess:
         """Execute a shell command with proper error handling.
 
@@ -96,6 +99,7 @@ class Bootstrap:
 
         Raises:
             BootstrapException: If command fails or times out
+
         """
         command_list = shlex.split(command)
         logger.info(f"Executing command: {command}")
@@ -106,7 +110,7 @@ class Bootstrap:
                 capture_output=capture_output,
                 text=True,
                 timeout=timeout,
-                check=check
+                check=check,
             )
 
             if result.stdout:
@@ -134,7 +138,7 @@ class Bootstrap:
             logger.error(error_msg)
             raise BootstrapException(
                 f"{error_msg}. Please ensure it's installed and in your PATH.",
-                rc=127
+                rc=127,
             ) from e
 
     def install_reqs(self, requirements_file: str = "requirements-dev.txt"):
@@ -145,13 +149,14 @@ class Bootstrap:
 
         Raises:
             BootstrapException: If installation fails
+
         """
         req_path = Path(requirements_file)
 
         if not req_path.exists():
             raise BootstrapException(
                 f"Requirements file not found: {requirements_file}",
-                rc=2
+                rc=2,
             )
 
         logger.info(f"Installing packages from: {requirements_file}")
@@ -185,6 +190,7 @@ def configure_logger(verbose: int):
             1: INFO
             2: DEBUG
             3: TRACE
+
     """
     logger.remove()
 
@@ -217,10 +223,10 @@ def main(
         count=True,
         min=0,
         max=3,
-        help="Increase verbosity (0=WARNING, 1=INFO, 2=DEBUG, 3=TRACE)"
+        help="Increase verbosity (0=WARNING, 1=INFO, 2=DEBUG, 3=TRACE)",
     ),
     working_dir: Path = typer.Option(
-        Path("."),
+        Path(),
         "-c",
         "--config",
         help="Working directory for bootstrap operations",
@@ -317,7 +323,11 @@ def cli_install_reqs(
 def cli_init(
     ctx: typer.Context,
     skip_uv: bool = typer.Option(False, "--skip-uv", help="Skip UV initialization"),
-    skip_task: bool = typer.Option(False, "--skip-task", help="Skip Task initialization"),
+    skip_task: bool = typer.Option(
+        False,
+        "--skip-task",
+        help="Skip Task initialization",
+    ),
 ):
     """Initialize a new project with UV and Task.
 
@@ -381,7 +391,7 @@ def src_ls():
 
 @cli_src.command("install")
 def src_install(
-    source_name: str = typer.Argument(..., help="Name of source to install")
+    source_name: str = typer.Argument(..., help="Name of source to install"),
 ):
     """Install a specific source"""
     logger.info(f"Installing source: {source_name}")
@@ -400,6 +410,7 @@ def clean_terminate(err: Exception):
 
     Args:
         err: Exception that caused termination
+
     """
     # Define user-facing errors (expected errors)
     user_errors = (
@@ -415,7 +426,9 @@ def clean_terminate(err: Exception):
     if isinstance(err, subprocess.TimeoutExpired):
         logger.error(f"Command timed out: {err.cmd}")
         logger.critical("Operation exceeded maximum allowed time")
-        sys.exit(124) # [ ] TODO: This code came from a google search. Confirm it's accuracy.
+        sys.exit(
+            124,
+        )  # [ ] TODO: This code came from a google search. Confirm it's accuracy.
 
     # Handle expected user errors
     if isinstance(err, user_errors):

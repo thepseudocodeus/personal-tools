@@ -38,3 +38,18 @@ tasks:
     desc: Run the main.py file installed with uv init
     cmds:
       - uv run main.py
+
+  rust:fmt:
+    desc: Format Python code with Ruff
+    cmds:
+      - uv run ruff check . --select ALL --fix-only
+      - uv run ruff format .
+    sources:
+      - '**/*.py'
+    silent: false
+
+  run:check:
+    desc: Run Omarchy diagnostic pipeline
+    cmds:
+      - uv run omarchy_check.py --verbose
+    silent: false
