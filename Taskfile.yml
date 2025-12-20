@@ -2,45 +2,63 @@
 
 version: "3"
 
+# Global variables
+vars:
+  MSG: "Default commit message"
+
+# Default task
 tasks:
   default:
-    desc: Display possible functions.
+    desc: Display all available tasks
     cmds:
       - task -a
     silent: true
 
-  init:env:
-    desc: Initialize base tools
-    cmds:
-      - uv run bootstrap.py init
+  init:
+    env:
+      desc: Initialize base tools
+      cmds:
+        - uv run bootstrap.py init
 
-  add:reqs:
-    desc: Add packages from requirements-dev file
+  reqs:
+    desc: "Install packages from requirements-dev file"
     cmds:
       - uv run bootstrap.py install-reqs --timeout 600
 
-  add:reqs-from-file:
-    desc: Install to uv from a file
+  reqs_from_file:
+    desc: "Install packages from a specific file"
     cmds:
       - uv run bootstrap.py install-reqs --file requirements.txt
 
-  add:reqs-verbose:
-    desc: Install requirements-dev packages with more output
+  reqs_verbose:
+    desc: "Install packages with verbose output"
     cmds:
       - uv run bootstrap.py -vv install-reqs
 
-  run:demo:
-    desc: Run the demonstration code
-    cmds:
-      - uv run bootstrap.py demo
+  run-demo:
+      desc: "Run the demonstration code"
+      cmds:
+        - uv run bootstrap.py demo
 
-  run:main:
-    desc: Run the main.py file installed with uv init
+  run-main:
+    desc: "Run main.py installed with uv init"
     cmds:
       - uv run main.py
 
-  rust:fmt:
-    desc: Format Python code with Ruff
+  check:
+    desc: "Run Omarchy diagnostic pipeline"
+    cmds:
+      - uv run omarchy_check.py --verbose
+    silent: false
+
+  arch_check:
+    desc: "Run Arch Omarchy diagnostic pipeline"
+    cmds:
+      - uv run arch_check.py --verbose
+    silent: false
+
+  ruff-fmt:
+    desc: "Format Python code using Ruff"
     cmds:
       - uv run ruff check . --select ALL --fix-only
       - uv run ruff format .
@@ -48,8 +66,9 @@ tasks:
       - '**/*.py'
     silent: false
 
-  run:check:
-    desc: Run Omarchy diagnostic pipeline
+  git:
+    desc: "Add, commit, and push all changes"
     cmds:
-      - uv run omarchy_check.py --verbose
-    silent: false
+      - git add .
+      - git commit -m "{{.MSG}}"
+      - git push
